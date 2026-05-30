@@ -64,9 +64,16 @@ fun SubjectAttendanceCard(subject: SubjectAttendance, modifier: Modifier = Modif
                 Column(
                     modifier = Modifier
                         .weight(1f)
-                        .padding(horizontal = 12.dp),
+                    .padding(horizontal = 12.dp),
                 ) {
                     Text(text = subject.name, style = MaterialTheme.typography.titleMedium)
+                    subject.facultyName?.let { facultyName ->
+                        Text(
+                            text = facultyName,
+                            color = MutedInk,
+                            style = MaterialTheme.typography.bodyMedium,
+                        )
+                    }
                     Text(
                         text = "${subject.attendedClasses} of ${subject.totalClasses} classes attended",
                         color = MutedInk,
@@ -105,4 +112,3 @@ fun SubjectAttendanceCard(subject: SubjectAttendance, modifier: Modifier = Modif
         }
     }
 }
-

@@ -5,6 +5,7 @@ import kotlin.math.floor
 data class SubjectAttendance(
     val id: String,
     val name: String,
+    val facultyName: String? = null,
     val attendedClasses: Int,
     val totalClasses: Int,
     val requiredPercentage: Int = 75,
@@ -19,9 +20,9 @@ data class SubjectAttendance(
 
     val riskStatus: RiskStatus
         get() = when {
+            totalClasses == 0 -> RiskStatus.SAFE
             attendancePercentage >= requiredPercentage -> RiskStatus.SAFE
             attendancePercentage >= requiredPercentage - 10 -> RiskStatus.WARNING
             else -> RiskStatus.CRITICAL
         }
 }
-

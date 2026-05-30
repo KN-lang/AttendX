@@ -14,36 +14,26 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.attendx.app.attendance.presentation.components.OverallAttendanceCard
 import com.attendx.app.attendance.presentation.components.RiskStatusBadge
 import com.attendx.app.attendance.presentation.components.SubjectAttendanceCard
 import com.attendx.app.core.theme.MutedInk
 
 @Composable
-fun AttendanceDashboardRoute(
-    viewModel: AttendanceDashboardViewModel = viewModel(factory = AttendanceDashboardViewModel.Factory),
-) {
-    val uiState by viewModel.uiState.collectAsState()
-    AttendanceDashboardScreen(uiState = uiState)
-}
-
-@Composable
 fun AttendanceDashboardScreen(
     uiState: AttendanceDashboardUiState,
+    onAddSubjectClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Scaffold(
         modifier = modifier.fillMaxSize(),
         floatingActionButton = {
             ExtendedFloatingActionButton(
-                onClick = { },
+                onClick = onAddSubjectClick,
                 text = { Text(text = "Add subject", fontWeight = FontWeight.SemiBold) },
                 icon = { Text(text = "+", style = MaterialTheme.typography.headlineSmall) },
             )
@@ -90,4 +80,3 @@ fun AttendanceDashboardScreen(
         }
     }
 }
-
