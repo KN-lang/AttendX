@@ -12,8 +12,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Button
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -33,7 +35,13 @@ import com.attendx.app.core.theme.Safe
 import com.attendx.app.core.theme.Warning
 
 @Composable
-fun SubjectAttendanceCard(subject: SubjectAttendance, modifier: Modifier = Modifier) {
+fun SubjectAttendanceCard(
+    subject: SubjectAttendance,
+    onPresentClick: () -> Unit,
+    onAbsentClick: () -> Unit,
+    onCancelledClick: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
     val progressColor = when (subject.riskStatus) {
         RiskStatus.SAFE -> Safe
         RiskStatus.WARNING -> Warning
@@ -61,12 +69,14 @@ fun SubjectAttendanceCard(subject: SubjectAttendance, modifier: Modifier = Modif
                         fontWeight = FontWeight.Bold,
                     )
                 }
+
                 Column(
                     modifier = Modifier
                         .weight(1f)
-                    .padding(horizontal = 12.dp),
+                        .padding(horizontal = 12.dp),
                 ) {
                     Text(text = subject.name, style = MaterialTheme.typography.titleMedium)
+
                     subject.facultyName?.let { facultyName ->
                         Text(
                             text = facultyName,
@@ -74,12 +84,14 @@ fun SubjectAttendanceCard(subject: SubjectAttendance, modifier: Modifier = Modif
                             style = MaterialTheme.typography.bodyMedium,
                         )
                     }
+
                     Text(
                         text = "${subject.attendedClasses} of ${subject.totalClasses} classes attended",
                         color = MutedInk,
                         style = MaterialTheme.typography.bodyMedium,
                     )
                 }
+
                 Text(
                     text = "${subject.attendancePercentage}%",
                     color = progressColor,
@@ -87,7 +99,9 @@ fun SubjectAttendanceCard(subject: SubjectAttendance, modifier: Modifier = Modif
                     fontSize = 18.sp,
                 )
             }
+
             Spacer(modifier = Modifier.height(15.dp))
+
             LinearProgressIndicator(
                 progress = { subject.attendancePercentage / 100f },
                 modifier = Modifier
@@ -96,7 +110,9 @@ fun SubjectAttendanceCard(subject: SubjectAttendance, modifier: Modifier = Modif
                 color = progressColor,
                 trackColor = Color(0xFFF0F1F5),
             )
+
             Spacer(modifier = Modifier.height(13.dp))
+
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically,
@@ -107,7 +123,36 @@ fun SubjectAttendanceCard(subject: SubjectAttendance, modifier: Modifier = Modif
                     color = MutedInk,
                     style = MaterialTheme.typography.bodyMedium,
                 )
+
                 RiskStatusBadge(status = subject.riskStatus)
+            }
+
+            Spacer(modifier = Modifier.height(14.dp))
+
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+            ) {
+                Button(
+                    onClick = onPresentClick,
+                    modifier = Modifier.weight(1f),
+                ) {
+                    Text("Present")
+                }
+
+                Button(
+                    onClick = onAbsentClick,
+                    modifier = Modifier.weight(1f),
+                ) {
+                    Text("Absent")
+                }
+
+                OutlinedButton(
+                    onClick = onCancelledClick,
+                    modifier = Modifier.weight(1f),
+                ) {
+                    Text("Cancel")
+                }
             }
         }
     }

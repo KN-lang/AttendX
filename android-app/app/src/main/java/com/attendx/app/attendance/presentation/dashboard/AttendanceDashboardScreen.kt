@@ -18,15 +18,18 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.attendx.app.attendance.domain.model.AttendanceStatus
 import com.attendx.app.attendance.presentation.components.OverallAttendanceCard
 import com.attendx.app.attendance.presentation.components.RiskStatusBadge
 import com.attendx.app.attendance.presentation.components.SubjectAttendanceCard
 import com.attendx.app.core.theme.MutedInk
 
+
 @Composable
 fun AttendanceDashboardScreen(
     uiState: AttendanceDashboardUiState,
     onAddSubjectClick: () -> Unit,
+    onMarkAttendance: (String, AttendanceStatus) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Scaffold(
@@ -56,9 +59,11 @@ fun AttendanceDashboardScreen(
                     )
                 }
             }
+
             item {
                 OverallAttendanceCard(summary = uiState.summary)
             }
+
             item {
                 Row(
                     modifier = Modifier
@@ -71,12 +76,87 @@ fun AttendanceDashboardScreen(
                     RiskStatusBadge(status = uiState.summary.riskStatus)
                 }
             }
+
             items(
                 items = uiState.summary.subjects,
                 key = { it.id },
             ) { subject ->
-                SubjectAttendanceCard(subject = subject)
+                SubjectAttendanceCard(
+                    subject = subject,
+                    onPresentClick = {
+                        onMarkAttendance(subject.id, AttendanceStatus.PRESENT)
+                    },
+                    onAbsentClick = {
+                        onMarkAttendance(subject.id, AttendanceStatus.ABSENT)
+                    },
+                    onCancelledClick = {
+                        onMarkAttendance(subject.id, AttendanceStatus.CANCELLED)
+                    },
+                )
             }
         }
     }
 }
+
+
+// @Composable
+// fun AttendanceDashboardScreen(
+    
+    
+//     // uiState: AttendanceDashboardUiState,
+//     // onAddSubjectClick: () -> Unit,
+//     // modifier: Modifier = Modifier,
+// ) {
+//     Scaffold(
+//         modifier = modifier.fillMaxSize(),
+//         floatingActionButton = {
+//             ExtendedFloatingActionButton(
+//                 onClick = onAddSubjectClick,
+//                 text = { Text(text = "Add subject", fontWeight = FontWeight.SemiBold) },
+//                 icon = { Text(text = "+", style = MaterialTheme.typography.headlineSmall) },
+//             )
+//         },
+//     ) { innerPadding ->
+//         LazyColumn(
+//             modifier = Modifier
+//                 .fillMaxSize()
+//                 .padding(innerPadding),
+//             contentPadding = PaddingValues(horizontal = 20.dp, vertical = 22.dp),
+//             verticalArrangement = Arrangement.spacedBy(14.dp),
+//         ) {
+//             item {
+//                 Column(modifier = Modifier.padding(bottom = 8.dp)) {
+//                     Text(text = "AttendX", style = MaterialTheme.typography.headlineLarge)
+//                     Text(
+//                         text = "Track your classes. Stay on target.",
+//                         color = MutedInk,
+//                         style = MaterialTheme.typography.bodyLarge,
+//                     )
+//                 }
+//             }
+//             item {
+//                 OverallAttendanceCard(summary = uiState.summary)
+//             }
+//             item {
+//                 Row(
+//                     modifier = Modifier
+//                         .fillMaxWidth()
+//                         .padding(top = 10.dp),
+//                     verticalAlignment = Alignment.CenterVertically,
+//                     horizontalArrangement = Arrangement.SpaceBetween,
+//                 ) {
+//                     Text(text = "Your subjects", style = MaterialTheme.typography.headlineSmall)
+//                     RiskStatusBadge(status = uiState.summary.riskStatus)
+//                 }
+//             }
+//             items(
+//                 items = uiState.summary.subjects,
+//                 key = { it.id },
+//             ) { subject ->
+//                 SubjectAttendanceCard(subject = subject)
+//             }
+//         }
+//     }
+// }
+
+

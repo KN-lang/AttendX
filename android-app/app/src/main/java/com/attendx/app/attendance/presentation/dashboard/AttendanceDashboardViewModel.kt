@@ -3,8 +3,10 @@ package com.attendx.app.attendance.presentation.dashboard
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.attendx.app.attendance.data.repository.InMemoryAttendanceRepository
+import com.attendx.app.attendance.domain.model.AttendanceStatus
 import com.attendx.app.attendance.domain.usecase.AddSubjectUseCase
 import com.attendx.app.attendance.domain.usecase.GetAttendanceSummaryUseCase
+import com.attendx.app.attendance.domain.usecase.MarkAttendanceUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -12,6 +14,7 @@ import kotlinx.coroutines.flow.asStateFlow
 class AttendanceDashboardViewModel(
     private val getAttendanceSummary: GetAttendanceSummaryUseCase,
     private val addSubject: AddSubjectUseCase,
+    private val markAttendance: MarkAttendanceUseCase,
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(
         AttendanceDashboardUiState(summary = getAttendanceSummary()),
@@ -64,13 +67,22 @@ class AttendanceDashboardViewModel(
             facultyName = form.facultyName,
             requiredPercentage = checkNotNull(percentage),
         )
-        _uiState.value = AttendanceDashboardUiState(summary = getAttendanceSummary())
+        refreshDashboard()
         resetAddSubjectForm()
         return true
     }
 
     fun resetAddSubjectForm() {
         _addSubjectUiState.value = AddSubjectUiState()
+    }
+
+    fun onMarkAttendance(subjectId: String, status: AttendanceStatus) {
+        markAttendance(subjectId, status)
+        refreshDashboard()
+    }
+
+    private fun refreshDashboard() {
+        _uiState.value = AttendanceDashboardUiState(summary = getAttendanceSummary())
     }
 
     companion object {
@@ -81,6 +93,7 @@ class AttendanceDashboardViewModel(
                 return AttendanceDashboardViewModel(
                     getAttendanceSummary = GetAttendanceSummaryUseCase(repository),
                     addSubject = AddSubjectUseCase(repository),
+                    markAttendance = MarkAttendanceUseCase(repository),
                 ) as T
             }
         }

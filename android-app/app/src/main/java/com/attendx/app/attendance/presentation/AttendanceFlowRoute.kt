@@ -34,6 +34,7 @@ fun AttendanceFlowRoute(
         AttendanceScreen.DASHBOARD -> AttendanceDashboardScreen(
             uiState = dashboardUiState,
             onAddSubjectClick = { currentScreen = AttendanceScreen.ADD_SUBJECT },
+            onMarkAttendance = viewModel::onMarkAttendance,
         )
 
         AttendanceScreen.ADD_SUBJECT -> {
